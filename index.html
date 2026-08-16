@@ -124,11 +124,11 @@
     color:var(--forest-dark);text-transform:uppercase;letter-spacing:0.2px;
   }
   .tag.type-tag{background:var(--tab-color,var(--moss));color:var(--white);}
-  .spec-glance{display:flex;gap:10px;margin-top:2px;font-size:11px;color:var(--ink-soft);}
-  .spec-glance span{display:flex;align-items:center;gap:3px;}
-  .spec-flower-row{display:flex;align-items:center;gap:5px;margin-top:2px;font-size:11px;color:var(--ink-soft);flex-wrap:wrap;}
-  .mini-swatch{width:9px;height:9px;border-radius:50%;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.18);}
-  .spec-wildlife{font-size:11px;color:var(--ink-soft);margin-top:2px;line-height:1.4;}
+  .spec-glance{display:flex;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--ink-soft);}
+  .spec-glance span{display:flex;align-items:center;gap:3px;padding:0 9px;}
+  .spec-glance span:first-child{padding-left:0;}
+  .spec-glance span:not(:first-child){border-left:1px dashed var(--line);}
+  .spec-wildlife{font-size:11px;color:var(--ink-soft);line-height:1.4;margin-top:2px;}
 
   .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
   .empty-state .em-icon{font-size:34px;margin-bottom:10px;}
@@ -607,11 +607,8 @@ function cardHtml(sp){
       <div class="spec-glance">
         ${g.light ? `<span>${g.light}</span>` : ''}
         ${g.moisture ? `<span>💧 ${g.moisture}</span>` : ''}
-      </div>
-      ${(sp.flower.colors.length || sp.flower.time) ? `<div class="spec-flower-row">
-        ${sp.flower.colors.map(c=>`<span class="mini-swatch" style="background:${FLOWER_SWATCH[c]}"></span>`).join('')}
         ${sp.flower.time ? `<span>🌸 ${esc(sp.flower.time)}</span>` : ''}
-      </div>` : ''}
+      </div>
       ${wl.length ? `<div class="spec-wildlife">${esc(wl.join(' · '))}</div>` : ''}
     </div>`;
 }

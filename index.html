@@ -126,6 +126,9 @@
   .tag.type-tag{background:var(--tab-color,var(--moss));color:var(--white);}
   .spec-glance{display:flex;gap:10px;margin-top:2px;font-size:11px;color:var(--ink-soft);}
   .spec-glance span{display:flex;align-items:center;gap:3px;}
+  .spec-flower-row{display:flex;align-items:center;gap:5px;margin-top:2px;font-size:11px;color:var(--ink-soft);flex-wrap:wrap;}
+  .mini-swatch{width:9px;height:9px;border-radius:50%;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,0.18);}
+  .spec-wildlife{font-size:11px;color:var(--ink-soft);margin-top:2px;line-height:1.4;}
 
   .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
   .empty-state .em-icon{font-size:34px;margin-bottom:10px;}
@@ -573,10 +576,20 @@ function glanceIcons(sp){
   if(sp.moisture.wet) m.push('Wet');
   return { light: bits.join(' / '), moisture: m.join('/') };
 }
+function wildlifeGlance(sp){
+  const labels = [];
+  if(sp.wildlife.pollinators) labels.push('🐝 Pollinators');
+  if(sp.wildlife.birds) labels.push('🐦 Birds');
+  if(sp.wildlife.beneficialInsects) labels.push('🐞 Beneficial Insects');
+  if(sp.wildlife.otherSmallAnimals) labels.push('🐿 Small Animals');
+  if(sp.wildlife.amphibiansReptiles) labels.push('🐸 Amphibians/Reptiles');
+  return labels;
+}
 function cardHtml(sp){
   const g = glanceIcons(sp);
   const starred = myList.has(sp.scientific);
   const color = TYPE_COLORS[sp.type] || '#54724A';
+  const wl = wildlifeGlance(sp);
   return `
     <div class="spec-card" style="--tab-color:${color}" data-sci="${escAttr(sp.scientific)}">
       <div class="spec-top">
@@ -595,6 +608,11 @@ function cardHtml(sp){
         ${g.light ? `<span>${g.light}</span>` : ''}
         ${g.moisture ? `<span>💧 ${g.moisture}</span>` : ''}
       </div>
+      ${(sp.flower.colors.length || sp.flower.time) ? `<div class="spec-flower-row">
+        ${sp.flower.colors.map(c=>`<span class="mini-swatch" style="background:${FLOWER_SWATCH[c]}"></span>`).join('')}
+        ${sp.flower.time ? `<span>🌸 ${esc(sp.flower.time)}</span>` : ''}
+      </div>` : ''}
+      ${wl.length ? `<div class="spec-wildlife">${esc(wl.join(' · '))}</div>` : ''}
     </div>`;
 }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }

@@ -226,9 +226,9 @@
   }
   .syn{font-style:italic;font-size:12.5px;color:var(--ink-soft);}
   .wiki-link{
-    display:flex;align-items:center;justify-content:center;gap:6px;
-    padding:11px;border-radius:9px;border:1.5px solid var(--forest);color:var(--forest-dark);
-    text-decoration:none;font-weight:700;font-size:13.5px;
+    flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+    padding:11px 8px;border-radius:9px;border:1.5px solid var(--forest);color:var(--forest-dark);
+    text-decoration:none;font-weight:700;font-size:13px;
   }
   .wiki-link:active{background:var(--parchment-deep);}
 
@@ -621,6 +621,13 @@ function wikiUrl(scientificName){
   const title = scientificName.trim().replace(/\s+/g, '_');
   return `https://en.wikipedia.org/wiki/${encodeURIComponent(title)}`;
 }
+// Direct link to BONAP's county-level distribution map image, built the same way —
+// BONAP's long-standing MapGallery convention keys the .png filename to "Genus species"
+// (base binomial only, since infraspecific maps aren't reliably filed this way).
+function bonapUrl(scientificName){
+  const binomial = scientificName.trim().split(/\s+/).slice(0,2).join(' ');
+  return `http://bonap.net/MapGallery/County/${encodeURIComponent(binomial)}.png`;
+}
 
 function renderBrowse(){
   const filtered = sortList(SPECIES.filter(passesFilters));
@@ -785,8 +792,9 @@ function detailHtml(sp){
         ${sp.notes ? `<div class="note-box">${esc(sp.notes)}</div>` : ''}
       </div>` : ''}
 
-      <div class="dsec" style="margin-bottom:0;">
-        <a class="wiki-link" href="${wikiUrl(sp.scientific)}" target="_blank" rel="noopener">📖 View on Wikipedia ↗</a>
+      <div class="dsec" style="margin-bottom:0;display:flex;gap:8px;">
+        <a class="wiki-link" href="${wikiUrl(sp.scientific)}" target="_blank" rel="noopener">📖 Wikipedia ↗</a>
+        <a class="wiki-link" href="${bonapUrl(sp.scientific)}" target="_blank" rel="noopener">🗺️ BONAP Range Map ↗</a>
       </div>
 
     </div>`;

@@ -198,7 +198,8 @@
   .detail-star.starred{color:var(--gold);background:rgba(255,255,255,0.25);}
   .detail-common{font-size:24px;color:var(--white);font-family:'Roboto Slab',serif;font-weight:700;padding-right:80px;line-height:1.2;}
   .detail-sci{font-style:italic;color:#C8D8CC;font-size:15px;margin-top:3px;}
-  .detail-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .detail-tags-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap;}
+  .detail-tags{display:flex;flex-wrap:wrap;gap:6px;}
   .detail-body{flex:1;overflow-y:auto;padding:16px 18px 30px;}
   .dsec{margin-bottom:18px;}
   .dsec h3{
@@ -225,12 +226,11 @@
     font-size:13px;line-height:1.5;color:var(--ink);
   }
   .syn{font-style:italic;font-size:12.5px;color:var(--ink-soft);}
-  .wiki-link{
-    flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
-    padding:11px 8px;border-radius:9px;border:1.5px solid var(--forest);color:var(--forest-dark);
-    text-decoration:none;font-weight:700;font-size:13px;
+  .detail-links{display:flex;gap:12px;flex:0 0 auto;padding-right:2px;}
+  .detail-links a{
+    font-size:12px;font-weight:700;color:#E4EDE3;text-decoration:none;
+    border-bottom:1.5px solid rgba(228,237,227,0.5);padding-bottom:1px;
   }
-  .wiki-link:active{background:var(--parchment-deep);}
 
   /* ---- my list / guide views ---- */
   .list-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px;}
@@ -634,9 +634,7 @@ function renderBrowse(){
   document.getElementById('results-count').textContent = filtered.length + (filtered.length===1 ? ' species' : ' species');
   const grid = document.getElementById('results-grid');
   if(filtered.length===0){
-    grid.innerHTML = '';
-    grid.parentElement.insertAdjacentHTML('beforeend','');
-    document.getElementById('results-grid').outerHTML = `<div id="results-grid"><div class="empty-state"><div class="em-icon">🌿</div><h3>No species match</h3><p>Try loosening a filter or clearing your search — the guide covers 685 Maryland native species.</p></div></div>`;
+    grid.innerHTML = `<div class="empty-state"><div class="em-icon">🌿</div><h3>No species match</h3><p>Try loosening a filter or clearing your search — the guide covers 685 Maryland native species.</p></div>`;
     return;
   }
   grid.innerHTML = filtered.map(cardHtml).join('');
@@ -696,10 +694,16 @@ function detailHtml(sp){
       <button class="detail-star ${starred?'starred':''}" data-star="${escAttr(sp.scientific)}" aria-label="Save to My List">${starred?'★':'☆'}</button>
       <div class="detail-common">${esc(sp.common || sp.scientific)}</div>
       <div class="detail-sci">${esc(sp.scientific)}</div>
-      <div class="detail-tags">
-        <span class="tag type-tag" style="background:rgba(255,255,255,0.22);">${esc(sp.type)}</span>
-        ${sp.subtype ? `<span class="tag" style="background:rgba(255,255,255,0.14);color:#fff;">${esc(sp.subtype)}</span>` : ''}
-        ${sp.difficulty ? `<span class="tag" style="background:rgba(255,255,255,0.14);color:#fff;">${esc(sp.difficulty)}</span>` : ''}
+      <div class="detail-tags-row">
+        <div class="detail-tags">
+          <span class="tag type-tag" style="background:rgba(255,255,255,0.22);">${esc(sp.type)}</span>
+          ${sp.subtype ? `<span class="tag" style="background:rgba(255,255,255,0.14);color:#fff;">${esc(sp.subtype)}</span>` : ''}
+          ${sp.difficulty ? `<span class="tag" style="background:rgba(255,255,255,0.14);color:#fff;">${esc(sp.difficulty)}</span>` : ''}
+        </div>
+        <div class="detail-links">
+          <a href="${wikiUrl(sp.scientific)}" target="_blank" rel="noopener">Wiki ↗</a>
+          <a href="${bonapUrl(sp.scientific)}" target="_blank" rel="noopener">BONAP ↗</a>
+        </div>
       </div>
     </div>
     <div class="detail-body">
@@ -791,11 +795,6 @@ function detailHtml(sp){
         ${sp.synonyms ? `<div class="syn" style="margin-bottom:8px;">Also known as: ${esc(sp.synonyms)}</div>` : ''}
         ${sp.notes ? `<div class="note-box">${esc(sp.notes)}</div>` : ''}
       </div>` : ''}
-
-      <div class="dsec" style="margin-bottom:0;display:flex;gap:8px;">
-        <a class="wiki-link" href="${wikiUrl(sp.scientific)}" target="_blank" rel="noopener">📖 Wikipedia ↗</a>
-        <a class="wiki-link" href="${bonapUrl(sp.scientific)}" target="_blank" rel="noopener">🗺️ BONAP Range Map ↗</a>
-      </div>
 
     </div>`;
 }
